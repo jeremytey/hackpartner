@@ -6,7 +6,7 @@ const devFormat = winston.format.combine(
     winston.format.colorize(),
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
-        return `${timestamp} [${level.}]: ${message}`;
+        return `${timestamp} [${level}]: ${message}`;
     })
 );
 
