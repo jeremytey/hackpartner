@@ -2,7 +2,7 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import cors from 'cors'; //
 import cookieParser from 'cookie-parser';
-import { logger } from './lib/logger'; // Winston logger
+import { logger } from './lib/logger'; // Winston logger 
 import { errorMiddleware } from './middleware/error.middleware';
 
 import authRouter from './routes/auth.routes';
