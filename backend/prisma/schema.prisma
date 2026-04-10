@@ -14,6 +14,12 @@ enum TeamStatus {
   FULL
 }
 
+enum Result {
+  WINNER
+  FINALIST
+  PARTICIPANT
+}
+
 enum Role {
   DEVELOPER
   DESIGNER
@@ -46,8 +52,10 @@ model User {
   linkedinURL String?
   preferredContact String?
   avatarURL   String?
+  createdHackathons Hackathon[]
   pastHackathons PastHackathon[]
   Hackathons HackathonParticipant[]
+  refreshTokens RefreshToken[]
   skills      UserSkill[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -69,13 +77,52 @@ model UserSkill {
 }
 
 model Hackathon {
+  id                   Int      @id @default(autoincrement())
+  name                 String
+  description          String
+  startDate            DateTime
+  registrationDeadline DateTime
+  maxTeamSize          Int
+  externalUrl          String
+  createdBy            Int
+  createdByUser        User     @relation(fields: [createdBy], references: [id])
+  participants         HackathonParticipant[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model HackathonParticipant {
   id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  date        DateTime
-  location    String
-  teams       Team[]
-  participants HackathonParticipant[]
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  hackathon   Hackathon @relation(fields: [hackathonId], references: [id])
+  hackathonId Int
+  teamStatus TeamStatus
+  spotsAvailable Int?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  @@unique([userId, hackathonId])
+}
+
+model PastHackathon {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String
+  year        Int
+  role        Role
+  result      Result
+  location    String
+  createdAt   DateTime  @default(now())
+}
+
+model RefreshToken {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  revoked     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  @@index([userId]) // Index for faster lookups by userId
 }
