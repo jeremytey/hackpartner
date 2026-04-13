@@ -48,13 +48,13 @@ Promise<{ accessToken: string; refreshToken: string; user: { id: number; email: 
     // find user by email
     const user = await userRepository.findUserByEmail(email);
     if (!user) {
-        throw new AppError("Invalid email or password", 401);
+        throw new AppError("Invalid email", 401);
     }
     
     // compare password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-        throw new AppError("Invalid email or password", 401);
+        throw new AppError("Invalid password", 401);
     }
 
     // delete existing refresh tokens for this user before creating new one
@@ -113,4 +113,8 @@ export async function refreshTokens(refreshToken: string): Promise<{ accessToken
     await createRefreshToken(payload.userId, newRefreshTokenHash, expiresAt);
 
     return tokens;
+}
+
+export async function logout(userId: number): Promise<void> {
+  await deleteRefreshTokensForUser(userId);
 }
