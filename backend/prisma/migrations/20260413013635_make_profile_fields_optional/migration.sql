@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "university" DROP NOT NULL,
+ALTER COLUMN "yearOfStudy" DROP NOT NULL,
+ALTER COLUMN "role" DROP NOT NULL;

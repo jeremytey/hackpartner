@@ -43,10 +43,10 @@ model User {
   id          Int       @id @default(autoincrement())
   email       String    @unique
   passwordHash String
-  username        String
-  university      String
-  yearOfStudy     Int
-  role        Role
+  username        String   @unique
+  university      String?
+  yearOfStudy     Int?
+  role        Role?
   bio         String?
   githubURL   String?
   linkedinURL String?
