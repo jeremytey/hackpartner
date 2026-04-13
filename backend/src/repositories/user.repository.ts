@@ -15,6 +15,13 @@ export async function findUserByUsername(username: string): Promise<User | null>
     return user;
 }
 
+export async function findUserById(id: number): Promise<User | null> {
+    const user = await prisma.user.findUnique({
+        where: { id },
+    });
+    return user;
+}
+
 export async function createUser(email: string, username: string, passwordHash: string): Promise<User> {
     const user = await prisma.user.create({
         data: {
