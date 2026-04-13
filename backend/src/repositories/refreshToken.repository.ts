@@ -1,7 +1,7 @@
 import { RefreshToken } from "@prisma/client";
 import prisma from "../lib/prisma";
 
-// refresh token stored in db
+// create hashed refresh token stored in db
 // browser stores refreshtoken in httpOnly cookie, compared againt hashed token in db when user tries to refresh access token
 export async function createRefreshToken(userId: number, tokenHash: string, expiresAt: Date): Promise<RefreshToken> {
     const refreshToken = await prisma.refreshToken.create({

@@ -27,6 +27,11 @@ enum Role {
   RESEARCHER
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 enum SkillCategory {
   FRONTEND
   BACKEND
@@ -46,6 +51,7 @@ model User {
   username        String   @unique
   university      String?
   yearOfStudy     Int?
+  userRole        UserRole  @default(USER)
   role        Role?
   bio         String?
   githubURL   String?
