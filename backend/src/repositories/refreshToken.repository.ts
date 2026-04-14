@@ -1,3 +1,4 @@
+// prisma functions for refresh token table - create, find, delete by token hash, delete all for user
 import { RefreshToken } from "@prisma/client";
 import prisma from "../lib/prisma";
 

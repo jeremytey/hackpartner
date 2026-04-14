@@ -117,7 +117,7 @@ model PastHackathon {
   name        String
   year        Int
   role        Role
-  result      Result
+  result      Result?
   location    String
   createdAt   DateTime  @default(now())
 }

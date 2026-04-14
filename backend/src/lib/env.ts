@@ -9,6 +9,7 @@ export const envSchema = z.object({
     JWT_REFRESH_SECRET: z.string().min(32),
     JWT_ACCESS_EXPIRES_IN: z.string(),
     JWT_REFRESH_EXPIRES_IN: z.string(),
+    FRONTEND_URL: z.string().optional().default('http://localhost:5173')
 });
 
 // Infer the TypeScript type from the zod schema

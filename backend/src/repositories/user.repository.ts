@@ -1,3 +1,4 @@
+// prisma functions for user table - find by email/username/id, create user
 import { User } from "@prisma/client";
 import prisma from "../lib/prisma";
 

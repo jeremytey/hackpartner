@@ -26,9 +26,6 @@ Promise<{ accessToken: string; refreshToken: string; user: { id: number; email: 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await userRepository.createUser(email, username, passwordHash);
 
-    // delete existing refresh tokens for this user before creating new one
-    await deleteRefreshTokensForUser(user.id);
-
     // generate JWT token pair
     const tokens = generateTokenPair(user.id, user.userRole); // default role is USER
 
@@ -48,13 +45,13 @@ Promise<{ accessToken: string; refreshToken: string; user: { id: number; email: 
     // find user by email
     const user = await userRepository.findUserByEmail(email);
     if (!user) {
-        throw new AppError("Invalid email", 401);
+        throw new AppError("Invalid email or password", 401);
     }
     
     // compare password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-        throw new AppError("Invalid password", 401);
+        throw new AppError("Invalid email or password", 401);
     }
 
     // delete existing refresh tokens for this user before creating new one
