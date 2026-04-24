@@ -1,4 +1,4 @@
-// getAllHackathons, createHackathon, editHackathonDetails, viewHackathonDetails, joinHackathon
+// getAllHackathons, createHackathon, editHackathonDetails, viewHackathonDetails, joinHackathon, deleteHackathon
 import { Request, Response, NextFunction } from "express";
 import * as hackathonService from "../services/hackathon.service";
 import { AppError } from "../lib/app.error";
@@ -72,20 +72,16 @@ export async function viewHackathonDetails(req: Request, res: Response, next: Ne
     }
 }
 
-export async function joinHackathon(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function deleteHackathon(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const userId = req.user?.userId;
-        if (!userId) {
-            throw new AppError("User ID missing from token", 401);
-        }
         const hackathonId = parseInt(req.params.hackathonId as string, 10);
         if (isNaN(hackathonId)) {
             throw new AppError("Invalid hackathon ID", 400);
         }
-        const participant = await hackathonService.registerParticipant(userId, hackathonId);
-        res.status(201).json(participant);
+        await hackathonService.deleteHackathon(hackathonId);
+        res.status(204).send();
     } catch (error) {
-        logger.error('JoinHackathon error:', error);
+        logger.error('DeleteHackathon error:', error);
         next(error);
     }
 }

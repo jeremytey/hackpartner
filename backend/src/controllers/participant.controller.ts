@@ -7,6 +7,23 @@ import { ParticipantFilterSchema, UpdateTeamStatusSchema } from "../validators/h
 import { HackathonParticipant } from "@prisma/client";
 import { logger } from "../lib/logger";
 
+export async function joinHackathon(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) {
+            throw new AppError("User ID missing from token", 401);
+        }
+        const hackathonId = parseInt(req.params.hackathonId as string, 10);
+        if (isNaN(hackathonId)) {
+            throw new AppError("Invalid hackathon ID", 400);
+        }
+        const participant = await participantService.registerParticipant(userId, hackathonId);
+        res.status(201).json(participant);
+    } catch (error) {
+        logger.error('JoinHackathon error:', error);
+        next(error);
+    }
+}
 
 export async function listParticipants(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
