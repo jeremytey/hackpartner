@@ -10,10 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "prisma/**/*", "tests/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "ts-node": {
-    "files": true
-  },
-  "files": ["src/types/express.d.ts"]
+  "include": ["src/**/*", "prisma/**/*"],
+  "exclude": ["node_modules", "dist", "tests/**/*"]
 }
