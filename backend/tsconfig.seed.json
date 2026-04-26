@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "lib": ["ES2020"],
+    "types": ["node"]
+  },
+  "include": [
+    "prisma/seed.ts",
+    "src/types/**/*.ts"
+  ]
+}

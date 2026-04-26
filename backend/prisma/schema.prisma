@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,6 +5,97 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int                    @id @default(autoincrement())
+  email             String                 @unique
+  passwordHash      String
+  username          String                 @unique
+  university        String?
+  yearOfStudy       Int?
+  role              Role?
+  bio               String?
+  githubURL         String?
+  linkedinURL       String?
+  preferredContact  String?
+  avatarURL         String?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  userRole          UserRole               @default(USER)
+  createdHackathons Hackathon[]
+  Hackathons        HackathonParticipant[]
+  pastHackathons    PastHackathon[]
+  refreshTokens     RefreshToken[]
+  skills            UserSkill[]
+}
+
+model Skill {
+  id       Int           @id @default(autoincrement())
+  name     String        @unique
+  category SkillCategory
+  users    UserSkill[]
+}
+
+model UserSkill {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  skillId Int
+  skill   Skill @relation(fields: [skillId], references: [id])
+  user    User  @relation(fields: [userId], references: [id])
+}
+
+model Hackathon {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  description          String
+  startDate            DateTime
+  registrationDeadline DateTime
+  maxTeamSize          Int
+  externalUrl          String?
+  createdBy            Int
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  createdByUser        User                   @relation(fields: [createdBy], references: [id])
+  participants         HackathonParticipant[]
+}
+
+model HackathonParticipant {
+  id             Int        @id @default(autoincrement())
+  userId         Int
+  hackathonId    Int
+  teamStatus     TeamStatus
+  spotsAvailable Int?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  hackathon      Hackathon  @relation(fields: [hackathonId], references: [id])
+  user           User       @relation(fields: [userId], references: [id])
+
+  @@unique([userId, hackathonId])
+}
+
+model PastHackathon {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String
+  year      Int
+  role      Role
+  result    Result?
+  location  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  tokenHash String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 enum TeamStatus {
@@ -42,93 +132,4 @@ enum SkillCategory {
   MOBILE
   UI_UX_DESIGN
   OTHER
-}
-
-model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  passwordHash String
-  username        String   @unique
-  university      String?
-  yearOfStudy     Int?
-  userRole        UserRole  @default(USER)
-  role        Role?
-  bio         String?
-  githubURL   String?
-  linkedinURL String?
-  preferredContact String?
-  avatarURL   String?
-  createdHackathons Hackathon[]
-  pastHackathons PastHackathon[]
-  Hackathons HackathonParticipant[]
-  refreshTokens RefreshToken[]
-  skills      UserSkill[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Skill {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  category    SkillCategory
-  users       UserSkill[]
-}
-
-model UserSkill {
-  id      Int     @id @default(autoincrement())
-  user    User    @relation(fields: [userId], references: [id])
-  userId  Int
-  skill   Skill   @relation(fields: [skillId], references: [id])
-  skillId Int
-}
-
-model Hackathon {
-  id                   Int      @id @default(autoincrement())
-  name                 String
-  description          String
-  startDate            DateTime
-  registrationDeadline DateTime
-  maxTeamSize          Int
-  externalUrl          String?
-  createdBy            Int
-  createdByUser        User     @relation(fields: [createdBy], references: [id])
-  participants         HackathonParticipant[]
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-}
-
-model HackathonParticipant {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  hackathon   Hackathon @relation(fields: [hackathonId], references: [id])
-  hackathonId Int
-  teamStatus TeamStatus
-  spotsAvailable Int?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@unique([userId, hackathonId])
-}
-
-model PastHackathon {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  name        String
-  year        Int
-  role        Role
-  result      Result?
-  location    String
-  createdAt   DateTime  @default(now())
-}
-
-model RefreshToken {
-  id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
-  tokenHash   String    @unique
-  expiresAt   DateTime
-  revoked     Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  @@index([userId]) // Index for faster lookups by userId
 }
