@@ -1,14 +1,7 @@
 // zustand store for authentication state management
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-// user role for authorization in frontend
-interface User {
-    id: string;
-    username: string;
-    email: string;
-    userRole: 'USER' | 'ADMIN';
-    }
+import type { User } from '../types/auth.types';
 
 // authentication state and actions for zustand store
 interface AuthState {

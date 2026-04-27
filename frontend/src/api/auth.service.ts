@@ -1,6 +1,6 @@
 // use axios instance with interceptors to map components to backend auth routes
 import axiosInstance from './axiosInstance';
-import { LoginCredentials, RegisterCredentials, AuthResponse } from '../types/auth.types';
+import type { LoginCredentials, RegisterCredentials, AuthResponse } from '../types/auth.types';
 
 
 // Sends credentials to backend and returns user data + access token. POST /auth/login

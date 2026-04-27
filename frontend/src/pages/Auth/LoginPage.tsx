@@ -24,13 +24,13 @@ export default function LoginPage() {
     try {
       const data = await login({ email, password });
       
-      // Update our global state (Zustand)
+      // Update global state (Zustand)
       setAuth(data.user, data.accessToken);
       
       // Navigate back to intended page or home
       navigate(from, { replace: true });
     } catch (err: any) {
-      // Pull error message from backend response if it exists
+      // Pull error message from backend response
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
