@@ -10,3 +10,8 @@ export const updateProfile = async (profileData: UpdateUserDto): Promise<UserPro
   const { data } = await axiosInstance.put<UserProfile>('/users/me', profileData);
   return data;
 };
+
+export const getUserProfileById = async (id: number): Promise<UserProfile> => {
+  const { data } = await axiosInstance.get<UserProfile>(`/users/${id}`);
+  return data;
+};
