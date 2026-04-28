@@ -1,7 +1,6 @@
 import axiosInstance from './axiosInstance';
 import type { Hackathon, Participant } from '../types/hackathon.types'; 
 
-
 // Fetches all hackathons from the database. GET /hackathons
 export const getAllHackathons = async (): Promise<Hackathon[]> => {
   const { data } = await axiosInstance.get<Hackathon[]>('/hackathons');
