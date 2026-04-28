@@ -21,8 +21,8 @@ export const getParticipantsByHackathonId = async (hackathonId: number): Promise
 };
 
 // Join a hackathon by providing the hackathon ID and team status. POST /hackathons/:id/join
-export const joinHackathon = async (hackathonId: number, teamStatus: 'LOOKING' | 'NEED_MEMBERS' | 'FULL'): Promise<void> => {
-  await axiosInstance.post(`/hackathons/${hackathonId}/join`, { teamStatus });
+export const joinHackathon = async (hackathonId: number): Promise<void> => {
+  await axiosInstance.post(`/hackathons/${hackathonId}/join`);
 };
 
 // Leave a hackathon. POST /hackathons/:id/leave
