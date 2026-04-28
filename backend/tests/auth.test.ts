@@ -269,22 +269,22 @@ describe('Authentication Integration Tests', () => {
 
     // 8. Logout edge cases
     describe('logout edge cases', () => {
-        test('should return 401 if no authorization header is provided', async () => {
+        test('should logout successfully without authorization header (use refresh token)', async () => {
             const res = await request(app)
                 .post('/auth/logout');
                 
-            expect(res.statusCode).toEqual(401);
-            expect(res.body).toHaveProperty('message', 'Authorization header missing');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveProperty('message', 'Logged out successfully');
         });
 
-        test('should return 401 if token is invalid', async () => {
+        test('should logout successfully even with an invalid authorization header', async () => {
             const res = await request(app)
                 .post('/auth/logout')
                 .set('Authorization', 'Bearer invalidtoken');
 
-            expect(res.statusCode).toEqual(401);
-            expect(res.body).toHaveProperty('message', 'Invalid or expired token');
-        });
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveProperty('message', 'Logged out successfully');
+    });
     });
 });
 
