@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getMyProfile, updateProfile, getAllSkills} from '../../api/user.service';
 import type { UserProfile, UpdateUserDto } from '../../types/user.types';
 import type { Skill } from '../../types/skill.types';
 
 export default function MyProfile() {
+  const location = useLocation();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(
+    Boolean((location.state as { editing?: boolean } | null)?.editing)
+  );
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<UpdateUserDto>({});
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
-  const [skillSearch, setSkillSearch] = useState('');
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -19,6 +23,12 @@ export default function MyProfile() {
         
         setProfile(data);
         setAllSkills(skillsList);
+        setExpandedCategories(
+          skillsList.reduce<Record<string, boolean>>((acc, skill) => {
+            acc[skill.category] = true;
+            return acc;
+          }, {})
+        );
         
         setFormData({
           university: data.university || '',
@@ -50,19 +60,28 @@ export default function MyProfile() {
       const updatedProfile = await updateProfile(formData);
       setProfile(updatedProfile);
       setIsEditing(false);
-      setSkillSearch(''); 
     } catch (err) {
       alert("Update failed. Please check your connection.");
     }
   };
 
-  // Filter skills for the suggestion list
-  const suggestedSkills = allSkills
-    .filter(s => 
-      s.name.toLowerCase().includes(skillSearch.toLowerCase()) && 
-      !formData.skills?.includes(s.id)
-    )
-    .slice(0, 8);
+  const selectedSkillIds = formData.skills || [];
+  const skillsByCategory = allSkills.reduce<Record<string, Skill[]>>((acc, skill) => {
+    if (!acc[skill.category]) acc[skill.category] = [];
+    acc[skill.category].push(skill);
+    return acc;
+  }, {});
+  const categoryNames = Object.keys(skillsByCategory).sort();
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
+  };
+
+  const formatCategoryLabel = (category: string) =>
+    category
+      .split('_')
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(' ');
 
   if (loading) return <div className="p-20 text-center text-slate-500 font-medium italic">Loading your profile...</div>;
   if (!profile) return <div className="p-20 text-center text-red-400 font-medium">Unable to load profile data.</div>;
@@ -111,7 +130,7 @@ export default function MyProfile() {
             <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] ml-1">Primary Role</label>
             {isEditing ? (
               <select 
-                className="w-full rounded-xl bg-slate-800/50 border border-slate-700 p-3 text-white outline-none focus:ring-2 focus:ring-cyan-500 transition-all appearance-none cursor-pointer"
+                className="w-full rounded-xl bg-slate-800/50 border border-slate-700 p-3 text-white outline-none focus:ring-2 focus:ring-cyan-500 transition-all cursor-pointer"
                 value={formData.role || 'DEVELOPER'}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value as UpdateUserDto['role']  })}
               >
@@ -147,7 +166,7 @@ export default function MyProfile() {
           <label className="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] ml-1">Tech Stack</label>
           
           <div className="flex flex-wrap gap-2">
-            {allSkills.filter(s => formData.skills?.includes(s.id)).map(skill => (
+            {allSkills.filter(s => selectedSkillIds.includes(s.id)).map(skill => (
               <button
                 key={skill.id}
                 type="button"
@@ -167,24 +186,46 @@ export default function MyProfile() {
 
           {isEditing && (
             <div className="space-y-3 mt-4">
-              <input
-                type="text"
-                placeholder="Search skills to add..."
-                className="w-full rounded-xl bg-slate-800/50 border border-slate-700 p-3 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                value={skillSearch}
-                onChange={(e) => setSkillSearch(e.target.value)}
-              />
-              <div className="flex flex-wrap gap-2">
-                {suggestedSkills.map(skill => (
-                  <button
-                    key={skill.id}
-                    type="button"
-                    onClick={() => toggleSkill(skill.id)}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-semibold transition-colors"
-                  >
-                    + {skill.name}
-                  </button>
-                ))}
+              <div className="space-y-3">
+                {categoryNames.map((category) => {
+                  const availableSkills = skillsByCategory[category].filter(
+                    (skill) => !selectedSkillIds.includes(skill.id)
+                  );
+
+                  return (
+                    <div key={category} className="rounded-xl border border-slate-800 bg-slate-900/30">
+                      <button
+                        type="button"
+                        onClick={() => toggleCategory(category)}
+                        className="w-full flex items-center justify-between px-4 py-3 text-left text-sm font-bold text-slate-300 hover:bg-slate-800/50 transition-colors"
+                      >
+                        <span>{formatCategoryLabel(category)}</span>
+                        <span className="text-xs text-slate-500">
+                          {expandedCategories[category] ? 'Hide' : 'Show'} ({availableSkills.length})
+                        </span>
+                      </button>
+
+                      {expandedCategories[category] && (
+                        <div className="flex flex-wrap gap-2 px-4 pb-4">
+                          {availableSkills.length > 0 ? (
+                            availableSkills.map((skill) => (
+                              <button
+                                key={skill.id}
+                                type="button"
+                                onClick={() => toggleSkill(skill.id)}
+                                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-semibold transition-colors"
+                              >
+                                + {skill.name}
+                              </button>
+                            ))
+                          ) : (
+                            <p className="text-xs text-slate-500 italic">All skills in this category are selected.</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

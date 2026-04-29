@@ -36,7 +36,7 @@ export default function HackathonFeed() {
           Find your next <span className="text-cyan-500 underline decoration-cyan-500/30 underline-offset-8">Hackathon</span>
         </h1>
         <p className="mt-6 text-lg text-slate-400 leading-relaxed">
-          The hub for students to team up, ship projects, and dominate the Malaysian tech scene. 
+          The hub for you to team up, ship projects, and dominate the Malaysian tech scene. 
         </p>
       </header>
 
@@ -68,11 +68,11 @@ export default function HackathonFeed() {
                 <div className="flex items-center justify-between text-xs">
                   <div className="text-slate-500">
                     <p>Starts</p>
-                    <p className="font-medium text-slate-300">{new Date(h.startDate).toLocaleDateString()}</p>
+                    <p className="font-medium text-slate-300">{new Date(h.startDate).toLocaleDateString('en-GB')}</p>
                   </div>
                   <div className="text-right text-red-400">
                     <p>Deadline</p>
-                    <p className="font-medium">{new Date(h.registrationDeadline).toLocaleDateString()}</p>
+                    <p className="font-medium">{new Date(h.registrationDeadline).toLocaleDateString('en-GB')}</p>
                   </div>
                 </div>
               </div>

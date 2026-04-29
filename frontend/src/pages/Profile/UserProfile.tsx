@@ -118,7 +118,7 @@ export default function UserProfilePage() {
 
           <div className="p-4 text-center">
             <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">
-              Joined {new Date(profile.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+              Joined {new Date(profile.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
             </p>
           </div>
         </div>

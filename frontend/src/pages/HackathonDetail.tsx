@@ -66,7 +66,7 @@ export default function HackathonDetail() {
         <div>
           <h1 className="text-4xl font-extrabold text-white">{hackathon.name}</h1>
           <div className="mt-4 flex flex-wrap gap-6 text-sm text-slate-400">
-            <span className="flex items-center gap-2">📅 {new Date(hackathon.startDate).toLocaleDateString()}</span>
+            <span className="flex items-center gap-2">📅 {new Date(hackathon.startDate).toLocaleDateString('en-GB')}</span>
             <span className="flex items-center gap-2">👥 Max Team: {hackathon.maxTeamSize}</span>
           </div>
         </div>

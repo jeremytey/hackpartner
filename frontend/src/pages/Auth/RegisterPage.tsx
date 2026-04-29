@@ -29,7 +29,7 @@ export default function RegisterPage() {
       
       // Auto-login after register
       setAuth(response.user, response.accessToken);
-      navigate('/'); 
+      navigate('/profile/me', { state: { editing: true } });
     } catch (err: unknown) {
       const maybeAxiosError = err as { response?: { data?: { message?: string } } };
       setError(maybeAxiosError.response?.data?.message || 'Registration failed');
