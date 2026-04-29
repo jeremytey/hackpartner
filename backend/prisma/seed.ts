@@ -12,6 +12,9 @@ const skills = [
     { name: 'Express', category: SkillCategory.BACKEND },
     { name: 'Django', category: SkillCategory.BACKEND },
     { name: 'SQL', category: SkillCategory.BACKEND },
+    { name: 'JavaScript', category: SkillCategory.BACKEND },
+    { name: 'TypeScript', category: SkillCategory.BACKEND },
+    {name: 'PHP', category: SkillCategory.BACKEND },
 
     // Full Stack
     { name: 'Next.js', category: SkillCategory.FULLSTACK },
@@ -35,6 +38,7 @@ const skills = [
     { name: 'Docker', category: SkillCategory.DEVOPS },
     { name: 'Kubernetes', category: SkillCategory.DEVOPS },
     { name: 'AWS', category: SkillCategory.DEVOPS },
+    { name: 'GitHub Actions', category: SkillCategory.DEVOPS },
     
     // UI/UX
     { name: 'Figma', category: SkillCategory.UI_UX_DESIGN },
