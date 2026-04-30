@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getParticipantsByHackathonId, getHackathonById } from '../api/hackathon.service';
+import { useAuthStore } from '../store/useAuthStore';
 import type { Participant, Hackathon, ParticipantFilters } from '../types/hackathon.types';
 
 const ROLES = ['DEVELOPER', 'DESIGNER', 'PRODUCT_MANAGER', 'RESEARCHER'];
@@ -8,10 +9,12 @@ const STATUSES = ['LOOKING', 'NEED_MEMBERS', 'FULL'] as const;
 
 export default function HackathonParticipants() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuthStore();
   const [hackathon, setHackathon] = useState<Hackathon | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<ParticipantFilters>({});
+  const isParticipant = participants.some(p => p.user.id === user?.id);
 
   useEffect(() => {
     if (!id) return;
@@ -127,6 +130,11 @@ export default function HackathonParticipants() {
                     </span>
                   )}
                 </div>
+                {isParticipant && p.user.preferredContact && (
+                  <p className="mt-3 text-xs text-slate-300">
+                    Contact: <span className="text-cyan-400">{p.user.preferredContact}</span>
+                  </p>
+                )}
               </div>
 
               {/* Card Footer */}

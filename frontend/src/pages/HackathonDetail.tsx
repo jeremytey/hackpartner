@@ -120,10 +120,23 @@ export default function HackathonDetail() {
           </div>
         </div>
 
-        <Link to={`/hackathons/${id}/participants`}
-          className="mt-3 block w-full rounded-xl border border-cyan-500/30 bg-cyan-500/5 py-3 text-center text-sm font-bold text-cyan-400 hover:bg-cyan-500/10 transition-colors">
-          View All Participants →
-        </Link>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
+          <h4 className="text-sm font-semibold text-slate-200">Participants</h4>
+          <div className="mt-4 space-y-3">
+            {participants.length === 0 ? (
+              <p className="text-xs text-slate-500">No participants yet.</p>
+            ) : (
+              participants.slice(0, 6).map((participant) => (
+                <div key={participant.id} className="rounded-xl border border-slate-800 bg-slate-900/40 px-3 py-2">
+                  <p className="text-sm font-medium text-white">{participant.user.username}</p>
+                  <p className="text-xs text-slate-400">
+                    {participant.user.role?.replace('_', ' ') ?? 'No role'} · {participant.user.university ?? 'University not set'}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
