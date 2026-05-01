@@ -1,8 +1,7 @@
 import { useEffect, useState, type SVGProps } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { getHackathonById, getParticipantsByHackathonId, joinHackathon, leaveHackathon } 
-from '../api/hackathon.service';
+import { getHackathonById, getParticipantsByHackathonId, joinHackathon, leaveHackathon } from '../api/hackathon.service';
 import type { Hackathon, Participant } from '../types/hackathon.types';
 
 const ArrowLeftIcon = (props: SVGProps<SVGSVGElement>) => (
@@ -105,102 +104,103 @@ export default function HackathonDetail() {
       </button>
 
       <div className="grid gap-5 lg:grid-cols-3">
-      {/* LEFT: Main Content */}
-      <div className="space-y-5 lg:col-span-2">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">{hackathon.name}</h1>
-          <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-400 font-sans">
-            <span className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-slate-500" />
-              {new Date(hackathon.startDate).toLocaleDateString('en-GB')}
-            </span>
-            <span className="flex items-center gap-2">
-              <UsersIcon className="h-4 w-4 text-slate-500" />
-              Up to {hackathon.maxTeamSize} members
-            </span>
+        {/* LEFT: Main Content */}
+        <div className="space-y-5 lg:col-span-2">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">{hackathon.name}</h1>
+            <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-400 font-sans">
+              <span className="flex items-center gap-2">
+                <CalendarIcon className="h-4 w-4 text-slate-500" />
+                {new Date(hackathon.startDate).toLocaleDateString('en-GB')}
+              </span>
+              <span className="flex items-center gap-2">
+                <UsersIcon className="h-4 w-4 text-slate-500" />
+                Up to {hackathon.maxTeamSize} members
+              </span>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-slate-900/30 p-5">
+            <h3 className="mb-3 text-base font-semibold text-white">About this Hackathon</h3>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-400">{hackathon.description}</p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-slate-900/30 p-5">
-          <h3 className="mb-3 text-base font-semibold text-white">About this Hackathon</h3>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-400">{hackathon.description}</p>
-        </div>
-      </div>
+        {/* RIGHT: Sidebar */}
+        <div className="space-y-4">
+          <div className="rounded-xl border border-white/10 bg-slate-900/50 p-4 backdrop-blur-sm shadow-xl">
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-white">Registration</h3>
+            
+            <div className="space-y-3">
+              {user ? (
+                <button
+                  onClick={handleJoinLeave}
+                  disabled={actionLoading}
+                  className={`w-full rounded-lg py-2.5 text-sm font-bold transition-all ${
+                    isParticipant 
+                      ? 'bg-slate-800 text-red-400 hover:bg-slate-700 border border-red-500/20' 
+                      : 'bg-cyan-600 text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/20'
+                  }`}
+                >
+                  {actionLoading ? 'Processing...' : isParticipant ? 'Leave Hackathon' : 'Join Hackathon'}
+                </button>
+              ) : (
+                <Link to="/login" className="block w-full rounded-lg bg-slate-800 py-2.5 text-center text-sm font-bold text-white hover:bg-slate-700">
+                  Login to Join
+                </Link>
+              )}
 
-      {/* RIGHT: Sidebar */}
-      <div className="space-y-4">
-        <div className="rounded-xl border border-white/10 bg-slate-900/50 p-4 backdrop-blur-sm shadow-xl">
-          <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-white">Registration</h3>
-          
-          <div className="space-y-3">
-            {user ? (
-              <button
-                onClick={handleJoinLeave}
-                disabled={actionLoading}
-                className={`w-full rounded-lg py-2.5 text-sm font-bold transition-all ${
-                  isParticipant 
-                    ? 'bg-slate-800 text-red-400 hover:bg-slate-700 border border-red-500/20' 
-                    : 'bg-cyan-600 text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/20'
-                }`}
-              >
-                {actionLoading ? 'Processing...' : isParticipant ? 'Leave Hackathon' : 'Join Hackathon'}
-              </button>
-            ) : (
-              <Link to="/login" className="block w-full rounded-lg bg-slate-800 py-2.5 text-center text-sm font-bold text-white hover:bg-slate-700">
-                Login to Join
-              </Link>
-            )}
+              {hackathon.externalUrl && (
+                <a
+                  href={hackathon.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 block w-full rounded-lg border border-slate-700 py-2 text-center text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+                >
+                  Official Site →
+                </a>
+              )}
 
-            {hackathon.externalUrl && (
-              <a
-                href={hackathon.externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 block w-full rounded-lg border border-slate-700 py-2 text-center text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
-              >
-                Official Site →
-              </a>
-            )}
+              {user?.userRole === 'ADMIN' && (
+                <Link to={`/admin/edit/${id}`} className="block w-full rounded-lg border border-dashed border-cyan-500/30 py-2 text-center text-xs font-medium text-cyan-500 hover:bg-cyan-500/5 transition-colors">
+                  Edit Hackathon
+                </Link>
+              )}
+            </div>
+          </div>
 
-            {user?.userRole === 'ADMIN' && (
-              <Link to={`/admin/edit/${id}`} className="block w-full rounded-lg border border-dashed border-cyan-500/30 py-2 text-center text-xs font-medium text-cyan-500 hover:bg-cyan-500/5 transition-colors">
-                Edit Hackathon
-              </Link>
-            )}
+          <div className="rounded-xl border border-white/10 bg-slate-900/30 p-4">
+            <h4 className="text-sm font-semibold text-white">Participants</h4>
+            <div className="mt-3 space-y-2">
+              {participants.length === 0 ? (
+                <p className="text-xs text-slate-500">No participants yet.</p>
+              ) : (
+                participants.slice(0, 5).map((participant) => (
+                  <div key={participant.id} className="rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2">
+                    <p className="text-sm font-medium text-white">{participant.user.username}</p>
+                    <p className="text-xs text-slate-400">
+                      {participant.user.role?.replace('_', ' ') ?? 'No role'}
+                    </p>
+                  </div>
+                ))
+              )}
+              {participants.length > 5 && (
+                <p className="text-xs text-slate-500">+ {participants.length - 5} more</p>
+              )}
+            </div>
+            
+            <div className="mt-5">
+              {isParticipant && (
+                <Link
+                  to={`/hackathons/${id}/participants`}
+                  className="block w-full rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 py-3 text-center text-sm font-extrabold uppercase tracking-widest text-white shadow-lg shadow-cyan-900/40 transition-all hover:scale-[1.02] hover:from-cyan-500 hover:to-cyan-400 active:scale-[0.98]"
+                >
+                  Find Teammates →
+                </Link>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="rounded-xl border border-white/10 bg-slate-900/30 p-4">
-          <h4 className="text-sm font-semibold text-white">Participants</h4>
-          <div className="mt-3 space-y-2">
-            {participants.length === 0 ? (
-              <p className="text-xs text-slate-500">No participants yet.</p>
-            ) : (
-              participants.slice(0, 5).map((participant) => (
-                <div key={participant.id} className="rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2">
-                  <p className="text-sm font-medium text-white">{participant.user.username}</p>
-                  <p className="text-xs text-slate-400">
-                    {participant.user.role?.replace('_', ' ') ?? 'No role'}
-                  </p>
-                </div>
-              ))
-            )}
-            {participants.length > 5 && (
-              <p className="text-xs text-slate-500">+ {participants.length - 5} more</p>
-            )}
-          </div>
-          <div className="mt-3">
-            {isParticipant && (
-              <Link
-                to={`/hackathons/${id}/participants`}
-                className="block w-full rounded-lg border border-cyan-500/30 bg-cyan-500/5 py-2 text-center text-xs font-bold uppercase tracking-wide text-cyan-400 transition-colors hover:bg-cyan-500/10"
-              >
-                Find Teammates →
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
       </div>
     </div>
   );
