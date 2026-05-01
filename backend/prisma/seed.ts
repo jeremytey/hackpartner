@@ -53,7 +53,7 @@ async function main() {
     for (const skill of skills) {
         await prisma.skill.upsert({
             where: { name: skill.name },
-            update: {},
+            update: { category: skill.category },
             create: skill,
         });
     }
