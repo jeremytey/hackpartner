@@ -20,25 +20,31 @@ export default function HackathonDetail() {
   useEffect(() => {
     const loadData = async () => {
       if (!id) return;
-      try {
-        const hData = await getHackathonById(Number(id));
-        setHackathon(hData);
 
+      const hackathonId = Number(id);
+
+      try {
+        const hData = await getHackathonById(hackathonId);
+        setHackathon(hData);
+      } catch (err) {
+        console.error("Failed to load details:", err);
+        return;
+      }
+
+      if (user) {
         try {
-          const pData = await getParticipantsByHackathonId(Number(id));
+          const pData = await getParticipantsByHackathonId(hackathonId);
           setParticipants(pData);
         } catch (participantsErr) {
           console.warn("Failed to load participants teaser:", participantsErr);
           setParticipants([]);
         }
-      } catch (err) {
-        console.error("Failed to load details:", err);
-      } finally {
-        setIsLoading(false);
+      } else {
+        setParticipants([]);
       }
     };
-    loadData();
-  }, [id]);
+    loadData().finally(() => setIsLoading(false));
+  }, [id, user]);
 
   const handleJoinLeave = async () => {
     if (!user) return navigate('/login');
