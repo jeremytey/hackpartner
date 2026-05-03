@@ -54,7 +54,7 @@ export default function HackathonFeed() {
           Find your next <span className="text-cyan-500 underline decoration-cyan-500/30 underline-offset-8">Hackathon</span>
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-slate-400 md:text-base">
-          The hub for you to team up, ship projects, and dominate the Malaysian tech scene. 
+          The hub for you to browse your next hackathon, find teammates, and build something amazing together.
         </p>
       </header>
 

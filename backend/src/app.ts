@@ -12,11 +12,18 @@ import skillRouter from './routes/skill.routes';
 
 const app = express();
 
-// Global Middleware
+const allowedOrigins = [
+  'http://localhost:5173', // Vite dev server
+  'https://hackpartner.dev',
+  'https://www.hackpartner.dev',
+  process.env.FRONTEND_URL
+  ].filter(Boolean) as string[]; // Filter out undefined values
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL ||'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
