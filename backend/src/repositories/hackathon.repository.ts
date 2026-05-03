@@ -34,6 +34,9 @@ export async function updateHackathon(id: number, data: UpdateHackathonDto): Pro
 
 // Delete a hackathon
 export async function deleteHackathon(id: number): Promise<void> {
+    await prisma.hackathonParticipant.deleteMany({
+        where: { hackathonId: id },
+    });
     await prisma.hackathon.delete({
         where: { id },
     });
