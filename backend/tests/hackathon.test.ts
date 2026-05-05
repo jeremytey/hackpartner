@@ -305,7 +305,7 @@ describe("Hackathon & Participant API Tests", () => {
             expect(res.status).toBe(400);
             expect(res.body).toHaveProperty("message");
         });
-
+    });
     // 5. Test user trying to join the same hackathon twice
     describe("POST /hackathons/:hackathonId/join twice", () => {
         test("should return 400 if user tries to join the same hackathon twice", async () => {
@@ -334,5 +334,4 @@ describe("Hackathon & Participant API Tests", () => {
         });
     });
     
-});
 });
