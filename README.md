@@ -8,7 +8,6 @@
 
 ## Live Demo
 **Web:** https://hackpartner.dev  
-**API:** https://hackpartner-production.up.railway.app
 
 ---
 
