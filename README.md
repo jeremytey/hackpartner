@@ -39,7 +39,7 @@ HackPartner gives students structured profiles and a filterable participant feed
 | Testing | Jest + Supertest | Integration tests hit real Express routes against a real test DB — catches middleware and auth bugs that unit tests miss |
 | CI/CD | GitHub Actions | Test gate on every push; auto-deploy on merge to main — no broken code reaches Railway without passing the suite first |
 | Frontend | React + TypeScript + Zustand | Component model with typed global auth state; Axios interceptors handle silent token refresh without user facing disruption |
-| Deployment | Railway + Render + Vercel | API on Railway, DB on Render, frontend on Vercel — each service on the tier optimised for its workload |
+| Deployment | Neon + Render + Vercel | API on Render, DB on Neon, frontend on Vercel — each service on the tier optimised for its workload |
 
 **Planned:** Redis cache layer for `GET /hackathons` and participant feed as user count scales.
 
