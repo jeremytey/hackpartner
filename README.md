@@ -112,6 +112,22 @@ npm test
 
 ---
 
+## Project Structure
+```
+hackpartner/
+├── backend/                 # Node.js + TypeScript API
+│   ├── prisma/               # Schema definition and migrations
+│   └── src/
+│       ├── routes/
+│       ├── controllers/
+│       ├── services/
+│       └── middlewares/      # Auth, error handling
+│
+└── frontend/                 # React + TypeScript + Zustand SPA
+    └── src/
+```
+---
+
 ## User Feedback Log
 
 | Date | User | University | Feedback | Action Taken |
