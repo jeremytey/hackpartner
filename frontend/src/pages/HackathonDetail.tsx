@@ -41,6 +41,9 @@ export default function HackathonDetail() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isParticipant = participants.some(p => p.user.id === user?.id);
+  const isDeadlinePassed = hackathon
+    ? new Date(hackathon.registrationDeadline) < new Date()
+    : false;
 
   useEffect(() => {
     const loadData = async () => {
@@ -143,17 +146,26 @@ export default function HackathonDetail() {
             
             <div className="space-y-3">
               {user ? (
-                <button
-                  onClick={handleJoinLeave}
-                  disabled={actionLoading}
-                  className={`w-full rounded-lg py-2.5 text-sm font-bold transition-all ${
-                    isParticipant 
-                      ? 'bg-slate-800 text-red-400 hover:bg-slate-700 border border-red-500/20' 
-                      : 'bg-cyan-600 text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/20'
-                  }`}
-                >
-                  {actionLoading ? 'Processing...' : isParticipant ? 'Leave Hackathon' : 'Join Hackathon'}
-                </button>
+                isDeadlinePassed && !isParticipant ? (
+                  <button
+                    disabled
+                    className="w-full rounded-lg bg-slate-800/50 py-2.5 text-sm font-bold text-slate-500 cursor-not-allowed border border-slate-700"
+                  >
+                    Registration Closed
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleJoinLeave}
+                    disabled={actionLoading}
+                    className={`w-full rounded-lg py-2.5 text-sm font-bold transition-all ${
+                      isParticipant 
+                        ? 'bg-slate-800 text-red-400 hover:bg-slate-700 border border-red-500/20' 
+                        : 'bg-cyan-600 text-white hover:bg-cyan-500 shadow-lg shadow-cyan-900/20'
+                    }`}
+                  >
+                    {actionLoading ? 'Processing...' : isParticipant ? 'Leave Hackathon' : 'Join Hackathon'}
+                  </button>
+                )
               ) : (
                 <Link to="/login" className="block w-full rounded-lg bg-slate-800 py-2.5 text-center text-sm font-bold text-white hover:bg-slate-700">
                   Login to Join
