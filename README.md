@@ -37,7 +37,7 @@ HackPartner gives students structured profiles and a filterable participant feed
 | Validation | Zod | Runtime validation at the API boundary; ensures bad data never reaches Service layer; `z.infer<>` means one schema drives both runtime checks and TypeScript types |
 | Logging | Winston | Structured JSON logs in production are queryable in log aggregators; `console.log` is not |
 | Testing | Jest + Supertest | Integration tests hit real Express routes against a real test DB — catches middleware and auth bugs that unit tests miss |
-| CI/CD | GitHub Actions | Test gate on every push; auto-deploy on merge to main — no broken code reaches Railway without passing the suite first |
+| CI/CD | GitHub Actions | Test gate on every push; auto-deploy on merge to main — no broken code reaches Render without passing the suite first |
 | Frontend | React + TypeScript + Zustand | Component model with typed global auth state; Axios interceptors handle silent token refresh without user facing disruption |
 | Deployment | Neon + Render + Vercel | API on Render, DB on Neon, frontend on Vercel — each service on the tier optimised for its workload |
 
