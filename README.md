@@ -41,7 +41,6 @@ HackPartner gives students structured profiles and a filterable participant feed
 | Frontend | React + TypeScript + Zustand | Component model with typed global auth state; Axios interceptors handle silent token refresh without user facing disruption |
 | Deployment | Neon + Render + Vercel | API on Render, DB on Neon, frontend on Vercel — each service on the tier optimised for its workload |
 
-**Planned:** Redis cache layer for `GET /hackathons` and participant feed as user count scales.
 
 ---
 
