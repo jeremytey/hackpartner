@@ -14,5 +14,5 @@ export const RegisterSchema = z.object({
 // Define the schema for user login using zod
 export const LoginSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(8),
+    password: z.string().min(1, "Password is required"),
 });

@@ -245,6 +245,28 @@ describe('Authentication Integration Tests', () => {
             expect(res.body).toHaveProperty('message', 'Invalid email or password');
         });
 
+        test('should return generic error for short wrong password', async () => {
+            const registerRes = await request(app)
+                .post('/auth/register')
+                .send({
+                    email: 'shortpw@example.com',
+                    username: 'shortpwuser',
+                    password: 'password123'
+                });
+
+            expect(registerRes.statusCode).toEqual(201);
+
+            const res = await request(app)
+                .post('/auth/login')
+                .send({
+                    email: 'shortpw@example.com',
+                    password: 'abc'
+                });
+
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toHaveProperty('message', 'Invalid email or password');
+        });
+
     });
 
     // 7. Missing cookies for refresh
