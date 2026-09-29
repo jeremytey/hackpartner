@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../../api/auth.service';
 import { useAuthStore } from '../../store/useAuthStore';
+import { getSignupRef, clearSignupRef } from '../../lib/signupRef';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
@@ -24,9 +25,11 @@ export default function RegisterPage() {
       const response = await register({ 
         username: formData.username, 
         email: formData.email, 
-        password: formData.password 
+        password: formData.password,
+        ref: getSignupRef(),
       });
-      
+      clearSignupRef();
+
       // Auto-login after register
       setAuth(response.user, response.accessToken);
       navigate('/profile/me', { state: { editing: true } });

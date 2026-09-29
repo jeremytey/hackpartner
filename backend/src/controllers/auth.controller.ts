@@ -11,8 +11,8 @@ export async function register(req: Request, res: Response, next: NextFunction):
         if (!parsedRegistration.success) {
             throw new AppError(parsedRegistration.error.issues[0].message, 400);
         }
-        const { email, username, password } = parsedRegistration.data;
-        const result = await authService.register(email, username, password);
+        const { email, username, password, ref } = parsedRegistration.data;
+        const result = await authService.register(email, username, password, ref);
         res.cookie("refreshToken", result.refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

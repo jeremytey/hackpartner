@@ -308,6 +308,45 @@ describe('Authentication Integration Tests', () => {
             expect(res.body).toHaveProperty('message', 'Logged out successfully');
     });
     });
+
+    // 9. Signup attribution
+    describe('signup ref attribution', () => {
+        test('should store a valid ref', async () => {
+            const res = await request(app)
+                .post('/auth/register')
+                .send({ email: 'ref@example.com', username: 'refuser', password: 'password123', ref: 'twitter_2026' });
+
+            expect(res.statusCode).toEqual(201);
+            const userInDb = await prisma.user.findUnique({ where: { email: 'ref@example.com' } });
+            expect(userInDb?.signupRef).toBe('twitter_2026');
+            expect(userInDb?.isTestAccount).toBe(false);
+        });
+
+        test.each([
+            ['bad chars', 'DROP TABLE;--'],
+            ['too long', 'a'.repeat(33)],
+            ['empty', ''],
+            ['number', 123],
+            ['object', { x: 1 }],
+        ])('should still register with junk ref (%s) and drop it', async (_label, ref) => {
+            const res = await request(app)
+                .post('/auth/register')
+                .send({ email: 'junkref@example.com', username: 'junkrefuser', password: 'password123', ref });
+
+            expect(res.statusCode).toEqual(201);
+            const userInDb = await prisma.user.findUnique({ where: { email: 'junkref@example.com' } });
+            expect(userInDb?.signupRef).toBeNull();
+        });
+
+        test('should ignore client-supplied isTestAccount', async () => {
+            await request(app)
+                .post('/auth/register')
+                .send({ email: 'flag@example.com', username: 'flaguser', password: 'password123', isTestAccount: true });
+
+            const userInDb = await prisma.user.findUnique({ where: { email: 'flag@example.com' } });
+            expect(userInDb?.isTestAccount).toBe(false);
+        });
+    });
 });
 
 

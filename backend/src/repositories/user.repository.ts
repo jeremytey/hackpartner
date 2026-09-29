@@ -44,12 +44,13 @@ export async function findUserById(id: number): Promise<User | null> {
     return user;
 }
 
-export async function createUser(email: string, username: string, passwordHash: string): Promise<User> {
+export async function createUser(email: string, username: string, passwordHash: string, signupRef?: string): Promise<User> {
     const user = await prisma.user.create({
         data: {
             email,
             username,
             passwordHash,
+            signupRef: signupRef ?? null,
         },
     });
     return user;

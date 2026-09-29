@@ -9,6 +9,9 @@ export const RegisterSchema = z.object({
     username: z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]+$/, {
         message: 'Username can only contain letters, numbers, and underscores'
     }),
+    // Attribution only: an invalid ref must never block signup, so .catch drops it
+    ref: z.string().trim().toLowerCase().min(1).max(32).regex(/^[a-z0-9_-]+$/)
+            .optional().catch(undefined),
 });
 
 // Define the schema for user login using zod

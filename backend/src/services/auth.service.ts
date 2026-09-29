@@ -7,7 +7,7 @@ import crypto from "crypto";
 import { UserRole } from "@prisma/client";
 import { AppError } from "../lib/app.error";
 
-export async function register(email: string, username: string, password: string): 
+export async function register(email: string, username: string, password: string, signupRef?: string):
 Promise<{ accessToken: string; refreshToken: string; user: { id: number; email: string; username: string; userRole: UserRole } }> {
 
     // check if email or username already exists
@@ -22,7 +22,7 @@ Promise<{ accessToken: string; refreshToken: string; user: { id: number; email: 
 
     // hash password and create user
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await userRepository.createUser(email, username, passwordHash);
+    const user = await userRepository.createUser(email, username, passwordHash, signupRef);
 
     // generate JWT token pair
     const tokens = generateTokenPair(user.id, user.userRole); // default role is USER
